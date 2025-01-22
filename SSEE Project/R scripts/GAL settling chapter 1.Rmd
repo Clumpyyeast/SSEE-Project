@@ -1,0 +1,1212 @@
+---
+title: "GAL settling chapter 1"
+output: pdf_document
+date: "2024-10-26"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+library(tidyverse)
+library(dplyr)
+#Read in final gal phenotyping data
+galdata=read.csv("GAL settling phenotyping 2024 T3 14.csv")
+#Order treatments so that all graphs look the same, this is just the first step to doing that though. 
+galdata$Treatment <- factor(galdata$Treatment, levels = c("YPD","YPDSET","GAL", "GALSET"))
+
+
+galdata=GAL_settling_phenotyping_2024_
+```
+
+
+```{r}
+library(patchwork)
+# Very ugly code I used in real time to see size variation 
+
+GALsetOnly1 <- filter(galdata, Treatment == "GALSET", Transfer == 1) #Replicate %in% c(1,2,3, 4))
+
+GALsetOnly4=filter(galdata, Treatment == "GALSET",Transfer == "4")
+
+GALsetOnly8=filter(galdata, Treatment == "GALSET",Transfer == "8")
+
+GALsetOnly12=filter(galdata, Treatment == "GALSET",Transfer == "12")
+
+GALsetOnly16=filter(galdata, Treatment == "GALSET",Transfer == "16") 
+
+GALsetOnly20=filter(galdata, Treatment == "GALSET",Transfer == "20")
+
+GALsetOnly24=filter(galdata, Treatment == "GALSET",Transfer == "24")
+
+GALsetOnly28=filter(galdata, Treatment == "GALSET",Transfer == "28")
+
+GALOnly4=filter(galdata, Treatment == "GAL",Transfer == "4")
+
+GALOnly1=filter(galdata, Treatment == "GAL",Transfer == "1")
+
+GALsetOnly4=na.omit(GALsetOnly4)
+
+GALsetOnly8=na.omit(GALsetOnly8)
+
+GALsetOnly12=na.omit(GALsetOnly12)
+
+GALsetOnly16=na.omit(GALsetOnly16)
+
+GALsetOnly20=na.omit(GALsetOnly20)
+
+GALsetOnly24=na.omit(GALsetOnly24)
+
+GALsetOnly28=na.omit(GALsetOnly28)
+
+GALOnly4=na.omit(GALOnly4)
+
+GALsetOnly1=na.omit(GALsetOnly1)
+
+GALOnly1=na.omit(GALOnly1)
+
+Galset28Avg=mean(GALsetOnly28$Number)
+
+Galset24Avg=mean(GALsetOnly24$Number)
+
+Galset20Avg=mean(GALsetOnly20$Number)
+
+Galset16Avg=mean(GALsetOnly16$Number)
+
+Galset12Avg=mean(GALsetOnly12$Number)
+
+Galset8Avg=mean(GALsetOnly8$Number)
+
+GALset4Avg=mean(GALsetOnly4$Number)
+
+GALset1Avg=mean(GALsetOnly1$Number)
+
+
+GAL4Avg=mean(GALOnly4$Number)
+
+GAL1Avg=mean(GALOnly1$Number)
+
+GalSetPlot1=ggplot(GALsetOnly1, aes(x = (Number))) +
+  geom_histogram(binwidth = 1, fill = "#4848FF", color = "black", alpha = 0.7) +
+  ggtitle("GAL Settling time 1 avg 3.25") +
+   xlab("Clump size") +
+  ylab("Frequency") +
+  theme_minimal()+
+  xlim(0,30)+ 
+  ylim(0,150)
+
+
+GalSetPlot4=ggplot(GALsetOnly4, aes(x = (Number))) +
+  geom_histogram(binwidth = 1, fill = "#4848FF", color = "black", alpha = 0.7) +
+  ggtitle("GAL Settling time 4 avg 5.22") +
+   xlab("Clump size") +
+  ylab("Frequency") +
+  theme_minimal()+
+  xlim(0,30)+ 
+  ylim(0,150)
+
+GalSetPlot8=ggplot(GALsetOnly8, aes(x = (Number))) +
+  geom_histogram(binwidth = 1, fill = "#4848FF", color = "black", alpha = 0.7) +
+  ggtitle("GAL Settling time 8 avg 6.72") +
+   xlab("Clump size") +
+  ylab("Frequency") +
+  theme_minimal()+
+  xlim(0,30)+ 
+  ylim(0,150)
+
+GalSetPlot12=ggplot(GALsetOnly12, aes(x = (Number))) +
+  geom_histogram(binwidth = 1, fill = "#4848FF", color = "black", alpha = 0.7) +
+  ggtitle("GAL Settling time 12 avg 9.45") +
+   xlab("Clump size") +
+  ylab("Frequency") +
+  theme_minimal()+
+  xlim(0,100)+ 
+  ylim(0,175)
+
+GalSetPlot16=ggplot(GALsetOnly16, aes(x = (Number))) +
+  geom_histogram(binwidth = 1, fill = "#4848FF", color = "black", alpha = 0.7) +
+  ggtitle("GAL Settling time 16 avg 9.9275") +
+   xlab("Clump size") +
+  ylab("Frequency") +
+  theme_minimal()+
+  xlim(0,204)+ 
+  ylim(0,200)
+
+GalSetPlot20=ggplot(GALsetOnly20, aes(x = (Number))) +
+  geom_histogram(binwidth = 1, fill = "#4848FF", color = "black", alpha = 0.7) +
+  ggtitle("GAL Settling time 20 avg ") +
+   xlab("Clump size") +
+  ylab("Frequency") +
+  theme_minimal()+
+  xlim(0,204)+ 
+  ylim(0,200)
+
+
+GalSetPlot24=ggplot(GALsetOnly24, aes(x = (Number))) +
+  geom_histogram(binwidth = 1, fill = "#4848FF", color = "black", alpha = 0.7) +
+  ggtitle("GAL Settling time 24 avg ") +
+   xlab("Clump size") +
+  ylab("Frequency") +
+  theme_minimal()+
+  xlim(0,204)+ 
+  ylim(0,200)
+
+GalSetPlot28=ggplot(GALsetOnly28, aes(x = (Number))) +
+  geom_histogram(binwidth = 1, fill = "#4848FF", color = "black", alpha = 0.7) +
+  ggtitle("GAL Settling time 28 avg ") +
+   xlab("Clump size") +
+  ylab("Frequency") +
+  theme_minimal()+
+  xlim(0,204)+ 
+  ylim(0,200)
+
+GalPlot4=ggplot(GALOnly4, aes(x = (Number))) +
+  geom_histogram(binwidth = 1, fill = "#ADD8E6", color = "black", alpha = 0.7) +
+  ggtitle("GAL time 4 avg 4.01") +
+   xlab("Clump size") +
+  ylab("Frequency") +
+  theme_minimal()+
+  xlim(0,30)+ 
+  ylim(0,300)
+
+GalPlot1=ggplot(GALOnly1, aes(x = (Number))) +
+  geom_histogram(binwidth = 1, fill = "#ADD8E6", color = "black", alpha = 0.7) +
+  ggtitle("GAL time 1 avg 3.27") +
+   xlab("Clump size") +
+  ylab("Frequency") +
+  theme_minimal()+
+  xlim(0,30)+ 
+  ylim(0,300)
+
+combined_plot <- GalPlot1/ GalPlot4 / GalSetPlot1 /GalSetPlot4  + plot_layout(ncol = 2)
+
+combined_plot
+
+GALsetOnly12
+
+plot2 <- (GalSetPlot1 / GalSetPlot4 / GalSetPlot8 / GalSetPlot12/ GalSetPlot16/ GalSetPlot20 / GalSetPlot24 ) + plot_layout(ncol = 2)
+plot2
+
+plot3 = GalSetPlot12/ GalSetPlot20 + plot_layout(ncol = 2)
+plot3
+
+
+plot4= GalSetPlot16/ GalSetPlot20 / GalSetPlot24/ GalSetPlot28 + plot_layout(ncol = 2)
+plot4
+```
+
+```{r}
+YPDsetOnly1=filter(galdata, Treatment == "YPDSET",Transfer == "1", Replicate %in% c(1,2,3, 4)) #Replicate %in% c(1,2,3, 4)))
+
+YPDsetOnly4=filter(galdata, Treatment == "YPDSET",Transfer == "4", Replicate %in% c(1,2,3, 4))
+
+YPDsetOnly8=filter(galdata, Treatment == "YPDSET",Transfer == "8", Replicate %in% c(1,2,3, 4))
+
+YPDsetOnly16=filter(galdata, Treatment == "YPDSET",Transfer == "16", Replicate %in% c(1,2,3, 4))
+
+YPDsetOnly20=filter(galdata, Treatment == "YPDSET",Transfer == "20", Replicate %in% c(1,2,3, 4))
+
+YPDsetOnly24=filter(galdata, Treatment == "YPDSET",Transfer == "24", Replicate %in% c(1,2,3, 4))
+
+YPDsetOnly28=filter(galdata, Treatment == "YPDSET",Transfer == "28", Replicate %in% c(1,2,3, 4))
+
+YPDsetOnly12=filter(galdata, Treatment == "YPDSET",Transfer == "12")
+
+YPDOnly4=filter(galdata, Treatment == "YPD",Transfer == "4")
+
+YPDOnly1=filter(galdata, Treatment == "YPD",Transfer == "1")
+
+YPDsetOnly28=na.omit(YPDsetOnly28)
+
+YPDsetOnly24=na.omit(YPDsetOnly24)
+
+YPDsetOnly20=na.omit(YPDsetOnly20)
+
+YPDsetOnly16=na.omit(YPDsetOnly16)
+
+YPDsetOnly12=na.omit(YPDsetOnly12)
+
+YPDsetOnly8=na.omit(YPDsetOnly8)
+
+YPDsetOnly4=na.omit(YPDsetOnly4)
+
+YPDOnly4=na.omit(YPDOnly4)
+
+YPDsetOnly1=na.omit(YPDsetOnly1)
+
+YPDOnly1=na.omit(YPDOnly1)
+
+YPDset28Avg=mean(YPDsetOnly28$Number)
+
+YPDset24Avg=mean(YPDsetOnly24$Number)
+
+YPDset20Avg=mean(YPDsetOnly20$Number)
+
+YPDset16Avg=mean(YPDsetOnly16$Number)
+
+YPDset12Avg=mean(YPDsetOnly12$Number)
+
+YPDset8Avg=mean(YPDsetOnly8$Number)
+
+YPDset4Avg=mean(YPDsetOnly4$Number)
+
+YPDset1Avg=mean(YPDsetOnly1$Number)
+
+
+
+YPD4Avg=mean(YPDOnly4$Number)
+
+YPD1Avg=mean(YPDOnly1$Number)
+
+
+
+YPDSetPlot1=ggplot(YPDsetOnly1, aes(x = (Number))) +
+  geom_histogram(binwidth = 1, fill = "#006400", color = "black", alpha = 0.7) +
+  ggtitle("YPD Settling time 1 avg 1.96") +
+   xlab("Clump size") +
+  ylab("Frequency") +
+  theme_minimal()+
+  xlim(0,20)+ 
+  ylim(0,200)
+
+
+YPDSetPlot4=ggplot(YPDsetOnly4, aes(x = (Number))) +
+  geom_histogram(binwidth = 1, fill = "#006400", color = "black", alpha = 0.7) +
+  ggtitle("YPD Settling time 4 avg 2.47") +
+   xlab("Clump size") +
+  ylab("Frequency") +
+  theme_minimal()+
+  xlim(0,20)+ 
+  ylim(0,200)
+
+YPDSetPlot8=ggplot(YPDsetOnly8, aes(x = (Number))) +
+  geom_histogram(binwidth = 1, fill = "#006400", color = "black", alpha = 0.7) +
+  ggtitle("YPD Settling time 4 avg 2.59") +
+   xlab("Clump size") +
+  ylab("Frequency") +
+  theme_minimal()+
+  xlim(0,20)+ 
+  ylim(0,200)
+
+YPDSetPlot12=ggplot(YPDsetOnly12, aes(x = (Number))) +
+  geom_histogram(binwidth = 1, fill = "#006400", color = "black", alpha = 0.7) +
+  ggtitle("YPD Settling time 4 avg 2.82") +
+   xlab("Clump size") +
+  ylab("Frequency") +
+  theme_minimal()+
+  xlim(0,20)+ 
+  ylim(0,200)
+
+YPDSetPlot28=ggplot(YPDsetOnly28, aes(x = (Number))) +
+  geom_histogram(binwidth = 1, fill = "#006400", color = "black", alpha = 0.7) +
+  ggtitle("YPD Settling time 28 avg 4.09") +
+   xlab("Clump size") +
+  ylab("Frequency") +
+  theme_minimal()+
+  xlim(0,30)+ 
+  ylim(0,200)
+
+YPDSetPlot24=ggplot(YPDsetOnly24, aes(x = (Number))) +
+  geom_histogram(binwidth = 1, fill = "#006400", color = "black", alpha = 0.7) +
+  ggtitle("YPD Settling time 24 avg 3.24") +
+   xlab("Clump size") +
+  ylab("Frequency") +
+  theme_minimal()+
+  xlim(0,30)+ 
+  ylim(0,200)
+
+YPDSetPlot20=ggplot(YPDsetOnly20, aes(x = (Number))) +
+  geom_histogram(binwidth = 1, fill = "#006400", color = "black", alpha = 0.7) +
+  ggtitle("YPD Settling time 20 avg 2.74") +
+   xlab("Clump size") +
+  ylab("Frequency") +
+  theme_minimal()+
+  xlim(0,30)+ 
+  ylim(0,200)
+
+YPDSetPlot16=ggplot(YPDsetOnly16, aes(x = (Number))) +
+  geom_histogram(binwidth = 1, fill = "#006400", color = "black", alpha = 0.7) +
+  ggtitle("YPD Settling time 16 avg 2.57") +
+   xlab("Clump size") +
+  ylab("Frequency") +
+  theme_minimal()+
+  xlim(0,30)+ 
+  ylim(0,200)
+
+YPDPlot4=ggplot(YPDOnly4, aes(x = (Number))) +
+  geom_histogram(binwidth = 1, fill = "#90EE90", color = "black", alpha = 0.7) +
+  ggtitle("YPD time 4 avg 2.51") +
+   xlab("Clump size") +
+  ylab("Frequency") +
+  theme_minimal()+
+  xlim(0,20)+ 
+  ylim(0,400)
+
+YPDPlot1=ggplot(YPDOnly1, aes(x = (Number))) +
+  geom_histogram(binwidth = 1, fill ="#90EE90", color = "black", alpha = 0.7) +
+  ggtitle("YPD time 1 avg 2.0") +
+   xlab("Clump size") +
+  ylab("Frequency") +
+  theme_minimal()+
+  xlim(0,20)+ 
+  ylim(0,400)
+
+combined_plot <- YPDPlot1 / YPDPlot4 / YPDSetPlot1 / YPDSetPlot4 + plot_layout(ncol = 2)
+
+combined_plot
+
+YPDsetplotCombo= YPDSetPlot1 / YPDSetPlot4 / YPDSetPlot8 / YPDSetPlot12 + plot_layout(ncol = 2)
+
+YPDSET = YPDSetPlot16 / YPDSetPlot20 / YPDSetPlot24 / YPDSetPlot28 + plot_layout(ncol = 2)
+
+YPDSET
+
+YPDsetplotCombo
+
+
+```
+
+
+```{r}
+#the code below is used for making the various clump sizes over time graphs between the four treatments and together 
+
+galdata$Binned_Number <- cut(galdata$Number, 
+                             breaks = c(1, 3, 6, 10, 20, 30, 40, 50, 100, 205),  # Updated breaks
+                             labels = c("1-2","3-5" ,"6-9", "10-19", "20-29", "30-39", "40-49", "50-100", "101-204"),
+                             right = FALSE)
+
+# Recalculate totals, excluding NA bins
+galdata_summary <- galdata %>%
+  group_by(Transfer, Treatment, Binned_Number) %>%
+  summarise(Total_Cells = sum(Number), .groups = "drop") %>%
+  complete(Transfer, Treatment, Binned_Number, fill = list(Total_Cells = 0)) %>%
+  filter(!is.na(Binned_Number))
+
+# Define custom x-axis ticks
+custom_x_ticks <- c(1, 4, 8, 12, 16, 20, 24, 28)
+
+# Loop over treatments to generate graphs with customized axes
+for (treatment in unique(galdata$Treatment)) {
+  treatment_summary <- galdata_summary %>% filter(Treatment == treatment)
+  
+  # Create the plot with custom x-axis ticks
+  plot <- ggplot(treatment_summary, aes(x = Transfer, y = Total_Cells, color = Binned_Number, group = Binned_Number)) +
+    geom_line(size = 1.2) +
+    geom_point(size = 2) +
+    scale_x_continuous(breaks = custom_x_ticks) +
+    scale_y_continuous(breaks = scales::pretty_breaks(n = 10)) +
+    labs(title = paste(treatment, "- Total Cells in Clumps Across Transfers"),
+         x = "Transfer",
+         y = "Total Cells in Clumps",
+         color = "Clump Size Bin") +
+    theme_minimal() +
+    theme(legend.position = "right")
+  
+  # Print the plot
+  print(plot)
+}
+
+multipaneled_plot_fixed_y <- ggplot(galdata_summary, aes(x = Transfer, y = Total_Cells, color = Binned_Number, group = Binned_Number)) +
+  geom_line(size = 1.2) +
+  geom_point(size = 2) +
+  facet_wrap(~ Treatment, scales = "fixed") +  # Use fixed scales for consistent y-axis
+  scale_x_continuous(breaks = custom_x_ticks) +
+  scale_y_continuous(breaks = scales::pretty_breaks(n = 10)) +
+  labs(title = "Total Cells in Clumps Across Transfers by Treatment (Fixed Y-Axis)",
+       x = "Transfer",
+       y = "Total Cells in Clumps",
+       color = "Clump Size Bin") +
+  theme_minimal() +
+  theme(legend.position = "right")
+
+# Print the multipaneled plot
+print(multipaneled_plot_fixed_y)
+
+
+write_csv(galdata_summary, "GALDataTotalCells.csv")
+
+
+
+
+
+```
+
+```{r}
+# Load necessary libraries
+# Load necessary libraries
+library(tidyverse)
+
+# Function to fit a cubic model and calculate significance
+fit_cubic_model <- function(data, treatment, bin) {
+  # Filter the data for the given treatment and bin
+  subset <- data %>%
+    filter(Treatment == treatment, Binned_Number == bin)
+  
+  if (nrow(subset) == 0) {
+    return(NULL) # Skip if no data
+  }
+  
+  # Fit cubic model
+  cubic_model <- lm(Total_Cells ~ poly(Transfer, 3, raw = TRUE), data = subset)
+  
+  # Extract R2
+  r2 <- summary(cubic_model)$r.squared
+  
+  # Extract coefficients and p-values
+  coef_summary <- summary(cubic_model)$coefficients
+  intercept <- coef_summary[1, "Estimate"]
+  intercept_p <- coef_summary[1, "Pr(>|t|)"]
+  linear_coef <- coef_summary[2, "Estimate"]
+  linear_p <- coef_summary[2, "Pr(>|t|)"]
+  quadratic_coef <- coef_summary[3, "Estimate"]
+  quadratic_p <- coef_summary[3, "Pr(>|t|)"]
+  cubic_coef <- coef_summary[4, "Estimate"]
+  cubic_p <- coef_summary[4, "Pr(>|t|)"]
+  
+  # Return results as a tibble
+  tibble(
+    Treatment = treatment,
+    Binned_Number = bin,
+    R2 = r2,
+    Intercept = intercept,
+    Intercept_p = intercept_p,
+    Linear_Coefficient = linear_coef,
+    Linear_Coefficient_p = linear_p,
+    Quadratic_Coefficient = quadratic_coef,
+    Quadratic_Coefficient_p = quadratic_p,
+    Cubic_Coefficient = cubic_coef,
+    Cubic_Coefficient_p = cubic_p
+  )
+}
+
+# Apply the function across all treatments and bins
+cubic_model_results <- map_dfr(
+  unique(galdata_summary$Treatment),
+  function(treatment) {
+    map_dfr(
+      unique(galdata_summary$Binned_Number),
+      function(bin) fit_cubic_model(galdata_summary, treatment, bin)
+    )
+  }
+)
+
+# Print the results
+print(cubic_model_results)
+
+
+
+
+
+```
+
+
+```{R}
+# Load necessary libraries
+library(tidyverse)
+
+# Function to fit a model and show its summary
+fit_and_summarize <- function(data, treatment, bin, segment_points) {
+  # Filter the data for the given treatment and bin
+  data_subset <- data %>%
+    filter(Treatment == treatment, Binned_Number == bin)
+  
+  # Add a segment variable based on segment_points
+  data_subset <- data_subset %>%
+    mutate(Segment = case_when(
+      Transfer <= segment_points[1] ~ "Segment1",
+      Transfer > segment_points[1] & Transfer <= segment_points[2] ~ "Segment2",
+      TRUE ~ "Segment3" # Optional for bins with more than two segments
+    ))
+  
+  # Fit the model
+  interaction_model <- lm(Total_Cells ~ Transfer * Segment, data = data_subset)
+  
+  # Return the model summary
+  summary(interaction_model)
+}
+
+# Example Usage
+# Define segmentation points for the specific bin
+segment_points_5_9 <- c(8, 28)  # For Bin 5-9
+segment_points_10_19 <- c(12, 28) # For Bin 10-19
+
+# Call the function for a specific treatment and bin
+fit_and_summarize(galdata_summary, treatment = "GALSET", bin = "5-9", segment_points = segment_points_5_9)
+
+
+fit_and_summarize(galdata_summary, treatment = "GALSET", bin = "10-19", segment_points = c(12, 28))
+
+fit_and_summarize(galdata_summary, treatment = "GALSET", bin = "20-29", segment_points = c(16, 28))
+
+fit_and_summarize(galdata_summary, treatment = "YPDSET", bin = "10-19", segment_points = c(20, 28))
+
+fit_and_summarize(galdata_summary, treatment = "YPDSET", bin = "20-29", segment_points = c(20, 28))
+
+
+
+
+
+
+
+
+```
+
+```{r}
+# Load necessary libraries
+library(ggplot2)
+library(dplyr)
+
+# Ensure galdata is loaded (replace "path_to_file.csv" with your actual file)
+# galdata <- read.csv("path_to_file.csv")
+
+# Filter out NAs
+data <- galdata %>% filter(!is.na(Number) & !is.na(Treatment) & !is.na(Transfer))
+
+# Define the exact clump size bins
+data <- data %>%
+  mutate(Clump_Size_Bin = cut(Number,
+                              breaks = c(0, 4, 9, 19, 29, 39, 49, 100, 204),
+                              labels = c("1-4", "5-9", "10-19", "20-29", 
+                                         "30-39", "40-49", "50-100", "101-204"),
+                              include.lowest = TRUE))
+
+# Ensure bins are ordered properly
+data$Clump_Size_Bin <- factor(data$Clump_Size_Bin, 
+                              levels = c("1-4", "5-9", "10-19", "20-29", 
+                                         "30-39", "40-49", "50-100", "101-204"))
+
+# Set the order of treatments
+data$Treatment <- factor(data$Treatment, levels = c("YPD", "YPDSET","GAL", "GALSET"))
+
+# Calculate proportions of clump sizes for each Transfer and Treatment
+data_summary <- data %>%
+  group_by(Treatment, Transfer, Clump_Size_Bin) %>%
+  summarise(Total = n(), .groups = "drop") %>%
+  group_by(Treatment, Transfer) %>%
+  mutate(Proportion = Total / sum(Total))
+
+# Custom color palette to match distinct bins
+custom_colors <- c("#08306B", "#2171B5", "#4292C6", "#6BAED6", "#9ECAE1", 
+                   "#C6DBEF", "#FDD0A2", "#F16913", "#D94801", 
+                   "#A50F15", "#67000D")
+
+# Plot the stacked bar chart
+ggplot(data_summary, aes(x = factor(Transfer), y = Proportion, fill = Clump_Size_Bin)) +
+  geom_bar(stat = "identity", position = "fill") +
+  facet_wrap(~Treatment, scales = "free_x") +
+  scale_fill_manual(values = custom_colors, name = "Clump Size Bin") +
+  labs(title = "Clump Size Proportions Across Transfers by Treatment",
+       x = "Transfer",
+       y = "Proportion of Total Cells") +
+  theme_minimal(base_size = 14) +
+  theme(legend.position = "right",
+        panel.grid.major = element_line(color = "gray90"),
+        panel.grid.minor = element_blank(),
+        axis.text.x = element_text(angle = 45, hjust = 1))
+
+
+
+
+
+
+
+
+
+
+
+
+```
+
+
+
+```{r}
+# Load necessary libraries
+library(ggplot2)
+library(dplyr)
+
+
+
+# Calculate proportions of total cells for each binned clump size
+data_summary <- galdata_summary %>%
+  group_by(Treatment, Transfer) %>%
+  mutate(Proportion = Total_Cells / sum(Total_Cells))
+
+# Set the order of treatments
+data$Treatment <- factor(data$Treatment, levels = c("YPD", "YPDSET","GAL", "GALSET"))
+
+custom_colors <- c("#08306B", "#2171B5", "#4292C6", "#6BAED6", "#9ECAE1", 
+                   "#C6DBEF", "#FDD0A2", "#F16913", "#D94801", 
+                   "#A50F15", "#67000D")
+
+# Plot the stacked bar chart
+ggplot(data_summary, aes(x = factor(Transfer), y = Proportion, fill = Binned_Number)) +
+  geom_bar(stat = "identity", position = "fill") +
+  facet_wrap(~Treatment, scales = "free_x") +
+  scale_fill_manual(values = custom_colors, name = "Clump Size Bin") +
+  labs(title = "Total Cells Proportions Across Transfers by Treatment",
+       x = "Transfer",
+       y = "Proportion of Total Cells") +
+  theme_minimal(base_size = 14) +
+  theme(legend.position = "right",
+        panel.grid.major = element_line(color = "gray90"),
+        panel.grid.minor = element_blank(),
+        axis.text.x = element_text(angle = 45, hjust = 1))
+
+
+
+```
+
+```{r}
+# Load necessary libraries
+library(ggplot2)
+library(dplyr)
+
+# Create a custom color palette with one color per treatment
+color_palette <- c(
+  "YPD" = "#90EE90",   # Light green
+  "YPDSET" = "#006400",  # Dark green
+  "GAL" = "#ADD8E6",   # Light blue
+  "GALSET" = "#4848FF"  # Dark blue
+)
+
+# Assuming 'galdata' is your dataset
+# Filtering for Transfer 1 and 4
+transfer_filtered <- galdata %>% filter(Transfer %in% c(1, 4, 8, 12, 16, 20, 24, 28))
+
+# Grouping by Treatment, Replicate, Settling status, and Transfer to calculate the average of the 'Number' column
+avg_transfer <- transfer_filtered %>%
+  group_by(Treatment, Replicate, Settling, Transfer) %>%
+  summarise(Average = mean(Number, na.rm = TRUE)) %>%
+  ungroup()
+
+# Create individual plots for each treatment and combine them side by side
+ggplot(avg_transfer, aes(x = Transfer, y = Average, color = Treatment)) +
+  geom_line(aes(group = Replicate), size = 1) +
+  geom_point(aes(group = Replicate), size = 2) +
+  facet_wrap(~ Treatment, ncol = 4) +
+  scale_color_manual(values = color_palette) +  # Applying the custom color palette
+  scale_x_continuous(breaks = c(1, 4, 8, 12, 16, 20, 24, 28)) +  # Ensure x-axis only includes Transfer 1 and 4
+  labs(title = "Change in Multicellularity Between Transfer 1 and 28",
+       x = "Transfer",
+       y = "Average Number per Group") +
+  theme_minimal() +
+  theme(legend.position = "none")  # Hide the legend since each plot is labeled
+
+
+
+
+``` 
+
+```{r}
+# Load necessary libraries
+library(ggplot2)
+library(dplyr)
+
+# Create a custom color palette with one color per treatment
+color_palette <- c(
+  "YPD" = "#90EE90",   # Light green
+  "YPDSET" = "#006400",  # Dark green
+  "GAL" = "#ADD8E6"    # Light blue
+)
+
+# Assuming 'galdata' is your dataset
+# Filtering for specific Transfers and excluding "GALSET" in Treatment
+transfer_filtered <- galdata %>%
+  filter(Transfer %in% c(1, 4, 8, 12, 16, 20, 24, 28) & Treatment %in% c("YPD", "YPDSET", "GAL"))
+
+# Grouping by Treatment, Replicate, Settling status, and Transfer to calculate the average of the 'Number' column
+avg_transfer <- transfer_filtered %>%
+  group_by(Treatment, Replicate, Settling, Transfer) %>%
+  summarise(Average = mean(Number, na.rm = TRUE)) %>%
+  ungroup()
+
+# Create individual plots for each treatment and combine them side by side
+ggplot(avg_transfer, aes(x = Transfer, y = Average, color = Treatment)) +
+  geom_line(aes(group = Replicate), size = 1) +
+  geom_point(aes(group = Replicate), size = 2) +
+  facet_wrap(~ Treatment, ncol = 3) +  # Adjusting columns since only 3 treatments remain
+  scale_color_manual(values = color_palette) +  # Applying the custom color palette
+  scale_x_continuous(breaks = c(1, 4, 8, 12, 16, 20, 24, 28)) +  # Ensure x-axis includes only specified transfers
+  labs(title = "Change in Multicellularity Across Transfers",
+       x = "Transfer",
+       y = "Average Number per Group") +
+  theme_minimal() +
+  theme(legend.position = "none")  # Hide the legend since each plot is labeled
+
+
+
+
+
+``` 
+
+```{r}
+library(ggplot2)
+library(dplyr)
+
+Data <- read.csv("GAL_Settling_ODs.csv")
+
+Data= Updated_GAL_Settling_ODs_with_Settled_Treatments_Autorecovered_311433723351644516_
+
+# Ensure Date is properly formatted
+Data$Date <- as.Date(Data$Date, format = "%m-%d-%Y")
+
+
+# Separate data for "Settled" and "Non-Settled" treatments
+settled_data <- Data %>% filter(Treatment %in% c("GALSET Settled", "YPDSET Settled"))
+non_settled_data <- Data %>% filter(!Treatment %in% c("GALSET Settled", "YPDSET Settled"))
+
+# Summarize data
+summarize_ODs <- function(Data) {
+  Data %>%
+    group_by(Treatment, Date) %>%
+    summarise(
+      Mean_OD = mean(OD, na.rm = TRUE),
+      SEM_OD = sd(OD, na.rm = TRUE) / sqrt(n())
+    ) %>%
+    ungroup()
+}
+
+summary_settled <- summarize_ODs(settled_data)
+summary_non_settled <- summarize_ODs(non_settled_data)
+
+# Plot Non-Settled
+plot_non_settled <- ggplot(summary_non_settled, aes(x = Date, y = Mean_OD, color = Treatment, group = Treatment)) +
+  geom_line(size = 0.8) +
+  geom_point(size = 1.5) +
+  geom_ribbon(aes(ymin = Mean_OD - SEM_OD, ymax = Mean_OD + SEM_OD, fill = Treatment), alpha = 0.2) +
+  labs(title = "Non-Settled Treatments: OD Measurements Through Transfers",
+       subtitle = "Mean OD with SEM for GAL, GALSET, YPD, and YPDSET",
+       x = "Transfer Date",
+       y = "Mean OD ± SEM",
+       color = "Treatment",
+       fill = "Treatment") +
+  scale_color_brewer(palette = "Set2") +
+  scale_fill_brewer(palette = "Set2") +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    panel.grid.minor = element_blank(),
+    legend.position = "bottom"
+  )
+
+# Plot Settled
+plot_settled <- ggplot(summary_settled, aes(x = Date, y = Mean_OD, color = Treatment, group = Treatment)) +
+  geom_line(size = 0.8) +
+  geom_point(size = 1.5) +
+  geom_ribbon(aes(ymin = Mean_OD - SEM_OD, ymax = Mean_OD + SEM_OD, fill = Treatment), alpha = 0.2) +
+  labs(title = "Settled Treatments: OD Measurements Through Transfers",
+       subtitle = "Mean OD with SEM for GALSET Settled and YPDSET Settled",
+       x = "Transfer Date",
+       y = "Mean OD ± SEM",
+       color = "Treatment",
+       fill = "Treatment") +
+  scale_color_brewer(palette = "Set3") +
+  scale_fill_brewer(palette = "Set3") +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    panel.grid.minor = element_blank(),
+    legend.position = "bottom"
+  )
+
+# Print plots
+print(plot_non_settled)
+print(plot_settled)
+```
+
+```{r}
+### to run this code you have to input the GALSET OD data as an excel file and then rename it to be Data because the Date column is not good unless its in that setup. 
+
+
+library(ggplot2)
+library(dplyr)
+
+# Clean column names
+names(Data) <- trimws(names(Data))
+
+# Normalize the Treatment column
+Data$Treatment <- trimws(Data$Treatment)
+
+# Verify unique Treatment values
+print("Unique Treatment values in Data:")
+print(unique(Data$Treatment))
+
+# Filter out Settled treatments
+filtered_data <- Data %>%
+  filter(!Treatment %in% c("GALSET Settled", "YPDSET Settled"))
+
+print("Number of rows in filtered_data:")
+print(nrow(filtered_data))
+print("Unique Treatment values in filtered_data:")
+print(unique(filtered_data$Treatment))
+
+# Convert Date column to proper Date format
+filtered_data$Date <- as.Date(filtered_data$Date, format = "%Y-%m-%d")
+
+# Remove rows with invalid dates
+filtered_data <- filtered_data %>% filter(!is.na(Date))
+
+# Summarize the data and handle missing or insufficient data
+summary_data <- filtered_data %>%
+  group_by(Treatment, Date) %>%
+  summarise(
+    Mean_OD = mean(OD, na.rm = TRUE),
+    SEM_OD = ifelse(n() > 1, sd(OD, na.rm = TRUE) / sqrt(n()), NA_real_)
+  ) %>%
+  filter(!is.na(Mean_OD)) %>%
+  ungroup()
+
+# Check for empty summary_data
+if (nrow(summary_data) == 0) {
+  stop("The summary_data dataframe is empty. Please check your data and filtering steps.")
+}
+
+# Define custom colors for each treatment
+custom_colors <- c(
+  "YPD" = "#32CD32",     # YPD.B
+  "YPDSET" = "#008000",  # YPDSET.B
+  "GAL" = "#87CEEB",     # GAL.B
+  "GALSET" = "#4169E1"   # GALSET.B
+)
+
+# Ensure Treatment is a factor for consistent ordering
+summary_data$Treatment <- factor(summary_data$Treatment, levels = c("YPD", "YPDSET", "GAL", "GALSET"))
+
+# Create the graph
+ggplot(summary_data, aes(x = Date, y = Mean_OD, color = Treatment, group = Treatment)) +
+  geom_line(size = 0.8) +
+  geom_point(size = 1.5) +
+  geom_ribbon(aes(ymin = Mean_OD - SEM_OD, ymax = Mean_OD + SEM_OD, fill = Treatment), alpha = 0.2) +
+  facet_wrap(~ Treatment, ncol = 4, scales = "fixed") +
+  labs(title = "OD Measurements for Non-Settled Treatments",
+       subtitle = "Mean OD with SEM for GAL, GALSET, YPD, and YPDSET",
+       x = "Transfer Date",
+       y = "Mean OD ± SEM",
+       color = "Treatment",
+       fill = "Treatment") +
+  scale_color_manual(values = custom_colors) +
+  scale_fill_manual(values = custom_colors) +
+  scale_x_date(
+    date_breaks = "1 week",    # Set date breaks to 1 week
+    date_labels = "%b %d"      # Format date labels as "Jan 01"
+  ) +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),  # Rotate x-axis labels
+    panel.grid.minor = element_blank(),
+    strip.text = element_text(size = 12),
+    legend.position = "bottom"
+  )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```
+
+```{r}
+library(ggplot2)
+library(dplyr)
+
+# Ensure Date is in proper date format in the raw data
+filtered_data <- filtered_data %>%
+  mutate(
+    Date = as.Date(Date, format = "%m/%d/%Y"),
+    Treatment = factor(Treatment, levels = c("YPD", "YPDSET", "GAL", "GALSET")) # Set treatment order
+  )
+
+# Summarize the data for plotting
+summary_data <- filtered_data %>%
+  group_by(Treatment, Date) %>%
+  summarise(
+    Mean_OD = mean(OD, na.rm = TRUE),
+    SEM_OD = sd(OD, na.rm = TRUE) / sqrt(n()),
+    .groups = "drop"
+  )
+
+# Fit the linear model to generate predictions
+model <- lm(OD ~ Date * Treatment, data = filtered_data, na.action = na.exclude)
+
+# Check model summary for debugging
+summary(model)
+
+# Generate predictions for the model
+filtered_data <- filtered_data %>%
+  mutate(Predicted = predict(model))
+
+# Summarize model predictions for plotting
+summary_predictions <- filtered_data %>%
+  group_by(Treatment, Date) %>%
+  summarise(
+    Mean_Predicted = mean(Predicted, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+# Define custom colors for each treatment
+custom_colors <- c(
+  "YPD" = "#32CD32",     # YPD.B
+  "YPDSET" = "#008000",  # YPDSET.B
+  "GAL" = "#87CEEB",     # GAL.B
+  "GALSET" = "#4169E1"   # GALSET.B
+)
+
+# Plot the data
+ggplot(summary_data, aes(x = Date, y = Mean_OD, color = Treatment, group = Treatment)) +
+  geom_line(size = 0.8) + # Observed mean OD
+  geom_point(size = 1.5) + # Observed data points
+  geom_ribbon(aes(ymin = Mean_OD - SEM_OD, ymax = Mean_OD + SEM_OD, fill = Treatment), alpha = 0.2) + # SEM shading
+  geom_line(data = summary_predictions, aes(x = Date, y = Mean_Predicted, color = Treatment), 
+            linetype = "solid", size = 1.2, alpha = 0.8) + # Enhanced model predictions
+  facet_wrap(~ Treatment, ncol = 4, scales = "fixed") + # Panels for each treatment
+  labs(
+    title = "OD Measurements for Non-Settled Treatments",
+    subtitle = "Mean OD with SEM and Model Predictions for GAL, GALSET, YPD, and YPDSET",
+    x = "Transfer Date",
+    y = "Mean OD ± SEM",
+    color = "Treatment",
+    fill = "Treatment"
+  ) +
+  scale_color_manual(values = custom_colors) +
+  scale_fill_manual(values = custom_colors) +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    panel.grid.minor = element_blank(),
+    strip.text = element_text(size = 12), # Larger facet labels for clarity
+    legend.position = "bottom"
+  )
+
+
+
+
+
+```
+
+
+```{r}
+# Load necessary libraries
+library(ggplot2)
+library(dplyr)
+
+# Custom colors for the treatments
+custom_colors <- c(
+  "YPD" = "#32CD32",     # YPD.B
+  "YPDSET" = "#008000",  # YPDSET.B
+  "GAL" = "#87CEEB",     # GAL.B
+  "GALSET" = "#4169E1"   # GALSET.B
+)
+
+# Compute summary statistics with SEM based on exactly 8 replicates
+summary_data <- galdata %>%
+  group_by(Treatment, Transfer) %>%
+  summarize(
+    mean = mean(Number, na.rm = TRUE),
+    sem = sd(Number, na.rm = TRUE) / sqrt(8),  # Calculate SEM using 8 replicates
+    lower = pmax(mean - sem, 0),              # Ensure lower bound is non-negative
+    upper = mean + sem,                       # Upper bound
+    .groups = "drop"                          # Ungroup after summarization
+  )
+summary_data$Treatment <- factor(summary_data$Treatment, levels = c("GAL", "GALSET", "YPD", "YPDSET"))
+# Generate the plot with faceted panels and shared scales
+ggplot(summary_data, aes(x = Transfer, y = mean, color = Treatment, fill = Treatment)) +
+  geom_line(size = 1.2) +
+  geom_ribbon(aes(ymin = lower, ymax = upper), alpha = 0.2) +
+  scale_color_manual(values = custom_colors) +  # Apply custom colors for lines
+  scale_fill_manual(values = custom_colors) +   # Apply custom colors for ribbons
+  labs(y = "Average Number", x = "Transfer", title = "Variation of Number across Replicates (SEM)") +
+  facet_wrap(~ Treatment, scales = "fixed") +  # Panels share the same scale
+  theme_minimal() +
+  theme(
+    legend.position = "none",  # Remove the legend since treatments are in separate panels
+    strip.text = element_text(size = 12, face = "bold"),  # Style the panel titles
+    axis.title = element_text(size = 12),
+    axis.text = element_text(size = 10)
+  )
+
+# Calculate averages for each treatment and transfer
+averages <- data %>%
+  group_by(Treatment, Transfer) %>%   # Group by Treatment and Transfer
+  summarise(Average = mean(Number, na.rm = TRUE),  # Mean of the 'Number' column
+            SD = sd(Number, na.rm = TRUE),        # Standard deviation
+            N = n())                             # Number of observations
+
+# Display the averaged data
+print(averages)
+
+# Perform ANOVA and Tukey's HSD for each transfer
+anova_results <- data %>%
+  group_by(Transfer) %>%
+  group_split() %>%
+  lapply(function(df) {
+    transfer_num <- unique(df$Transfer)
+    anova_model <- aov(Number ~ Treatment, data = df)
+    tukey <- TukeyHSD(anova_model)  # Perform Tukey's HSD post hoc test
+    list(Transfer = transfer_num, ANOVA = summary(anova_model), TukeyHSD = tukey)
+  })
+
+# Display ANOVA and Tukey's HSD results for each transfer
+for (result in anova_results) {
+  cat("\nTransfer:", result$Transfer, "\n")
+  print(result$ANOVA)
+  cat("\nTukey's HSD Results:\n")
+  print(result$TukeyHSD)
+}
+
+
+
+
+```
+
+```{r}
+##### CODE BELOW FOR LINEAR MODEL COMPARING REPLICATE MEANS ACROSS THE EXPERIMENT BETWEEN TRANSFERS AND THROUGHT THE TREATMENTS. 
+# Load necessary libraries
+library(dplyr)
+library(ggplot2)
+
+# Step 1: Aggregate the real data
+avg_data <- galdata %>%
+  group_by(Replicate, Transfer, Treatment) %>%
+  summarise(Average_Number = mean(Number, na.rm = TRUE), .groups = 'drop')
+
+# Step 2: Fit the linear model
+AVGmodel <- lm(Average_Number ~ Treatment * Transfer, data = avg_data)
+
+summary(AVGmodel)
+
+# Step 3: Create predictions for visualization
+# Generate a new dataset for predictions
+predict_data <- avg_data %>%
+  distinct(Treatment, Transfer) %>%
+  mutate(Average_Number_Predicted = predict(AVGmodel, newdata = .))
+
+# Step 4: Visualize the data
+ggplot() +
+  # Plot real data points
+  geom_point(data = avg_data, aes(x = Transfer, y = Average_Number, color = Treatment), size = 3, alpha = 0.6) +
+  # Plot predicted values
+  geom_line(data = predict_data, aes(x = Transfer, y = Average_Number_Predicted, color = Treatment), size = 1.2) +
+  # Customize the plot
+  labs(
+    title = "Real Data and Model Predictions Over Transfers",
+    x = "Transfer",
+    y = "Average Number",
+    color = "Treatment"
+  ) +
+  theme_minimal()
+
+# Load necessary library
+library(emmeans)
+
+# Step 1: Fit the model (if not already done)
+model <- lm(Average_Number ~ Treatment * Transfer, data = avg_data)
+
+# Step 2: Perform post hoc comparisons accounting for interactions
+# Obtain estimated marginal means for Treatment at each level of Transfer
+treatment_transfer_emmeans <- emmeans(model, ~ Treatment | Transfer)
+
+# Pairwise comparisons between treatments within each level of Transfer
+pairwise_comparisons_interaction <- contrast(treatment_transfer_emmeans, method = "pairwise")
+
+# Step 3: Output results
+print(pairwise_comparisons_interaction)
+
+# Optional: Adjust for multiple comparisons using Tukey's method
+pairwise_comparisons_interaction_tukey <- contrast(treatment_transfer_emmeans, method = "pairwise", adjust = "tukey")
+print(pairwise_comparisons_interaction_tukey)
+
+
+
+
+
+```
+
+```{r}
+library(MASS)
+library(emmeans)
+# Convert Treatment to a factor and reassign it
+galdata$Treatment <- as.factor(galdata$Treatment)
+
+# Relevel the factor to make "YPD" the reference level
+galdata$Treatment <- relevel(galdata$Treatment, ref = "YPD")
+
+
+GALsize <- glmmPQL(Number ~ Treatment * Transfer, 
+                   random = ~ 1 | Replicate, 
+                   family = quasipoisson(link = "log"), 
+                   data = galdata)
+summary(GALsize)
+
+
+# Compute estimated marginal means for Treatment within each level of Transfer
+emm_interaction <- emmeans(GALsize, ~ Treatment | Transfer)
+
+# Perform pairwise comparisons within each level of Transfer
+interaction_comparisons <- contrast(emm_interaction, method = "pairwise", adjust = "bonferroni")
+
+# Display results
+summary(interaction_comparisons)
+
+```
+
+```{r}
+
+# Convert Treatment to an unordered factor
+Data$Treatment <- as.factor(Data$Treatment)
+
+# Relevel Treatment to set YPD as the baseline
+Data$Treatment <- relevel(Data$Treatment, ref = "YPD")
+
+# Fit the model with the new baseline
+model <- lm(OD ~ Date * Treatment, data = Data)
+
+# Display the summary of the model
+summary(model)
+
+# Verify that YPD is now the baseline treatment
+print(levels(Data$Treatment))  # Check the order of levels
+
+# Generate predictions from the model
+# Ensure missing data is properly handled in the model
+model <- lm(OD ~ Date * Treatment, data = Data, na.action = na.exclude)
+
+# Generate predictions for the model, ensuring alignment with the original data
+Data$Predicted <- predict(model)
+
+# Plot actual data points and model predictions
+library(ggplot2)
+
+ggplot(Data, aes(x = Date)) +
+  geom_point(aes(y = OD, color = Treatment), alpha = 0.6, size = 2) +  # Actual data
+  geom_line(aes(y = Predicted, color = Treatment), size = 1) +  # Model predictions
+  labs(
+    title = "Model Predictions vs. Actual Data",
+    x = "Date (Days)",
+    y = "OD"
+  ) +
+  theme_minimal() +
+  theme(legend.title = element_text(face = "bold")) +
+  scale_color_brewer(palette = "Set2")
+
+
+
+
+
+
+
+```
