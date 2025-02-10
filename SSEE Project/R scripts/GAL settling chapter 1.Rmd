@@ -12,188 +12,158 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r}
 library(tidyverse)
 library(dplyr)
-#Read in final gal phenotyping data
-galdata=read.csv("GAL settling phenotyping 2024 T3 14.csv")
+
+```{r setup, include=FALSE}
+setwd("C:/git/SSEE/SSEE Project")  # Force set the working directory
+knitr::opts_knit$set(root.dir = "C:/git/SSEE/SSEE Project")
+
+getwd()
+```
+
+```{r}
+
+#galdata=read.csv("GAL settling phenotyping 2024 T3 14.csv")
+
+galdata=read.csv("./Original Data/GAL settling phenotyping 2024 T3 14.csv")
+
 #Order treatments so that all graphs look the same, this is just the first step to doing that though. 
 galdata$Treatment <- factor(galdata$Treatment, levels = c("YPD","YPDSET","GAL", "GALSET"))
 
+galdata=GAL.settling.phenotyping.2024.T3.14
 
-galdata=GAL_settling_phenotyping_2024_
 ```
-
-
 ```{r}
+library(ggplot2)
+library(dplyr)
 library(patchwork)
-# Very ugly code I used in real time to see size variation 
 
-GALsetOnly1 <- filter(galdata, Treatment == "GALSET", Transfer == 1) #Replicate %in% c(1,2,3, 4))
+# Define the transfer times you are interested in
+transfer_times <- c(1, 4, 8, 12, 16, 20, 24, 28)
 
-GALsetOnly4=filter(galdata, Treatment == "GALSET",Transfer == "4")
+# Function to filter, clean, and calculate the mean
+filter_clean_calc_mean <- function(data, treatment, transfer) {
+  filtered_data <- filter(data, Treatment == treatment, Transfer == transfer) %>% na.omit()
+  avg_value <- mean(filtered_data$Number, na.rm = TRUE)
+  return(list(data = filtered_data, avg = avg_value))
+}
 
-GALsetOnly8=filter(galdata, Treatment == "GALSET",Transfer == "8")
+# Process GALSET and GAL treatments
+galset_results <- lapply(transfer_times, function(t) filter_clean_calc_mean(galdata, "GALSET", t))
+gal_results <- lapply(c(1, 4), function(t) filter_clean_calc_mean(galdata, "GAL", t))
 
-GALsetOnly12=filter(galdata, Treatment == "GALSET",Transfer == "12")
+# Create a function to generate histograms
+generate_histogram <- function(data, avg, title_prefix, fill_color, x_limit = 204, y_limit = 200) {
+  ggplot(data, aes(x = Number)) +
+    geom_histogram(binwidth = 1, fill = fill_color, color = "black", alpha = 0.7) +
+    ggtitle(paste(title_prefix, "Settling time", unique(data$Transfer), "avg", round(avg, 2))) +
+    xlab("Clump size") +
+    ylab("Frequency") +
+    theme_minimal() +
+    xlim(0, x_limit) +
+    ylim(0, y_limit)
+}
 
-GALsetOnly16=filter(galdata, Treatment == "GALSET",Transfer == "16") 
+# Generate plots for GALSET
+galset_plots <- mapply(generate_histogram, 
+                        lapply(galset_results, `[[`, "data"), 
+                        lapply(galset_results, `[[`, "avg"), 
+                        MoreArgs = list(title_prefix = "GALSET", fill_color = "#4848FF"), 
+                        SIMPLIFY = FALSE)
 
-GALsetOnly20=filter(galdata, Treatment == "GALSET",Transfer == "20")
+# Generate plots for GAL
+gal_plots <- mapply(generate_histogram, 
+                    lapply(gal_results, `[[`, "data"), 
+                    lapply(gal_results, `[[`, "avg"), 
+                    MoreArgs = list(title_prefix = "GAL", fill_color = "#ADD8E6", x_limit = 30, y_limit = 300), 
+                    SIMPLIFY = FALSE)
 
-GALsetOnly24=filter(galdata, Treatment == "GALSET",Transfer == "24")
-
-GALsetOnly28=filter(galdata, Treatment == "GALSET",Transfer == "28")
-
-GALOnly4=filter(galdata, Treatment == "GAL",Transfer == "4")
-
-GALOnly1=filter(galdata, Treatment == "GAL",Transfer == "1")
-
-GALsetOnly4=na.omit(GALsetOnly4)
-
-GALsetOnly8=na.omit(GALsetOnly8)
-
-GALsetOnly12=na.omit(GALsetOnly12)
-
-GALsetOnly16=na.omit(GALsetOnly16)
-
-GALsetOnly20=na.omit(GALsetOnly20)
-
-GALsetOnly24=na.omit(GALsetOnly24)
-
-GALsetOnly28=na.omit(GALsetOnly28)
-
-GALOnly4=na.omit(GALOnly4)
-
-GALsetOnly1=na.omit(GALsetOnly1)
-
-GALOnly1=na.omit(GALOnly1)
-
-Galset28Avg=mean(GALsetOnly28$Number)
-
-Galset24Avg=mean(GALsetOnly24$Number)
-
-Galset20Avg=mean(GALsetOnly20$Number)
-
-Galset16Avg=mean(GALsetOnly16$Number)
-
-Galset12Avg=mean(GALsetOnly12$Number)
-
-Galset8Avg=mean(GALsetOnly8$Number)
-
-GALset4Avg=mean(GALsetOnly4$Number)
-
-GALset1Avg=mean(GALsetOnly1$Number)
-
-
-GAL4Avg=mean(GALOnly4$Number)
-
-GAL1Avg=mean(GALOnly1$Number)
-
-GalSetPlot1=ggplot(GALsetOnly1, aes(x = (Number))) +
-  geom_histogram(binwidth = 1, fill = "#4848FF", color = "black", alpha = 0.7) +
-  ggtitle("GAL Settling time 1 avg 3.25") +
-   xlab("Clump size") +
-  ylab("Frequency") +
-  theme_minimal()+
-  xlim(0,30)+ 
-  ylim(0,150)
-
-
-GalSetPlot4=ggplot(GALsetOnly4, aes(x = (Number))) +
-  geom_histogram(binwidth = 1, fill = "#4848FF", color = "black", alpha = 0.7) +
-  ggtitle("GAL Settling time 4 avg 5.22") +
-   xlab("Clump size") +
-  ylab("Frequency") +
-  theme_minimal()+
-  xlim(0,30)+ 
-  ylim(0,150)
-
-GalSetPlot8=ggplot(GALsetOnly8, aes(x = (Number))) +
-  geom_histogram(binwidth = 1, fill = "#4848FF", color = "black", alpha = 0.7) +
-  ggtitle("GAL Settling time 8 avg 6.72") +
-   xlab("Clump size") +
-  ylab("Frequency") +
-  theme_minimal()+
-  xlim(0,30)+ 
-  ylim(0,150)
-
-GalSetPlot12=ggplot(GALsetOnly12, aes(x = (Number))) +
-  geom_histogram(binwidth = 1, fill = "#4848FF", color = "black", alpha = 0.7) +
-  ggtitle("GAL Settling time 12 avg 9.45") +
-   xlab("Clump size") +
-  ylab("Frequency") +
-  theme_minimal()+
-  xlim(0,100)+ 
-  ylim(0,175)
-
-GalSetPlot16=ggplot(GALsetOnly16, aes(x = (Number))) +
-  geom_histogram(binwidth = 1, fill = "#4848FF", color = "black", alpha = 0.7) +
-  ggtitle("GAL Settling time 16 avg 9.9275") +
-   xlab("Clump size") +
-  ylab("Frequency") +
-  theme_minimal()+
-  xlim(0,204)+ 
-  ylim(0,200)
-
-GalSetPlot20=ggplot(GALsetOnly20, aes(x = (Number))) +
-  geom_histogram(binwidth = 1, fill = "#4848FF", color = "black", alpha = 0.7) +
-  ggtitle("GAL Settling time 20 avg ") +
-   xlab("Clump size") +
-  ylab("Frequency") +
-  theme_minimal()+
-  xlim(0,204)+ 
-  ylim(0,200)
-
-
-GalSetPlot24=ggplot(GALsetOnly24, aes(x = (Number))) +
-  geom_histogram(binwidth = 1, fill = "#4848FF", color = "black", alpha = 0.7) +
-  ggtitle("GAL Settling time 24 avg ") +
-   xlab("Clump size") +
-  ylab("Frequency") +
-  theme_minimal()+
-  xlim(0,204)+ 
-  ylim(0,200)
-
-GalSetPlot28=ggplot(GALsetOnly28, aes(x = (Number))) +
-  geom_histogram(binwidth = 1, fill = "#4848FF", color = "black", alpha = 0.7) +
-  ggtitle("GAL Settling time 28 avg ") +
-   xlab("Clump size") +
-  ylab("Frequency") +
-  theme_minimal()+
-  xlim(0,204)+ 
-  ylim(0,200)
-
-GalPlot4=ggplot(GALOnly4, aes(x = (Number))) +
-  geom_histogram(binwidth = 1, fill = "#ADD8E6", color = "black", alpha = 0.7) +
-  ggtitle("GAL time 4 avg 4.01") +
-   xlab("Clump size") +
-  ylab("Frequency") +
-  theme_minimal()+
-  xlim(0,30)+ 
-  ylim(0,300)
-
-GalPlot1=ggplot(GALOnly1, aes(x = (Number))) +
-  geom_histogram(binwidth = 1, fill = "#ADD8E6", color = "black", alpha = 0.7) +
-  ggtitle("GAL time 1 avg 3.27") +
-   xlab("Clump size") +
-  ylab("Frequency") +
-  theme_minimal()+
-  xlim(0,30)+ 
-  ylim(0,300)
-
-combined_plot <- GalPlot1/ GalPlot4 / GalSetPlot1 /GalSetPlot4  + plot_layout(ncol = 2)
-
+# Combine and display plots
+combined_plot <- (gal_plots[[1]] / gal_plots[[2]] / galset_plots[[1]] / galset_plots[[2]]) + plot_layout(ncol = 2)
 combined_plot
 
-GALsetOnly12
-
-plot2 <- (GalSetPlot1 / GalSetPlot4 / GalSetPlot8 / GalSetPlot12/ GalSetPlot16/ GalSetPlot20 / GalSetPlot24 ) + plot_layout(ncol = 2)
+plot2 <- wrap_plots(galset_plots, ncol = 2)
 plot2
 
-plot3 = GalSetPlot12/ GalSetPlot20 + plot_layout(ncol = 2)
+plot3 <- galset_plots[[4]] / galset_plots[[6]] + plot_layout(ncol = 2)
 plot3
 
-
-plot4= GalSetPlot16/ GalSetPlot20 / GalSetPlot24/ GalSetPlot28 + plot_layout(ncol = 2)
+plot4 <- galset_plots[[5]] / galset_plots[[6]] / galset_plots[[7]] / galset_plots[[8]] + plot_layout(ncol = 2)
 plot4
+
+plot5 <- galset_plots[[1]] / galset_plots[[4]] / galset_plots[[8]] + plot_layout(ncol = 3)
+plot5
+
+
+
+
+```
+```{r}
+library(dplyr)
+library(ggplot2)
+library(vegan)  # For diversity calculations
+
+# Define function to calculate diversity metrics
+calculate_diversity <- function(data) {
+  freq_table <- table(data$Number)  # Frequency of each clump size
+  proportions <- freq_table / sum(freq_table)  # Convert to proportions
+
+  shannon_index <- -sum(proportions * log(proportions))  # Shannon Index
+  simpson_index <- sum(proportions^2)  # Simpson Index
+  variance <- var(data$Number, na.rm = TRUE)  # Variance
+
+  return(c(Shannon = shannon_index, Simpson = simpson_index, Variance = variance))
+}
+
+# Define transfer times
+transfer_times <- c(1, 4, 8, 12, 16, 20, 24, 28)
+
+# Compute diversity metrics for GALSET
+diversity_results <- lapply(transfer_times, function(t) {
+  filtered_data <- filter(galdata, Treatment == "GALSET", Transfer == t) %>% na.omit()
+  if (nrow(filtered_data) > 0) {
+    diversity_metrics <- calculate_diversity(filtered_data)
+    return(data.frame(Transfer = t, Shannon = diversity_metrics["Shannon"],
+                      Simpson = diversity_metrics["Simpson"], Variance = diversity_metrics["Variance"]))
+  } else {
+    return(data.frame(Transfer = t, Shannon = NA, Simpson = NA, Variance = NA))
+  }
+})
+
+# Combine results into a single data frame
+diversity_df <- bind_rows(diversity_results)
+
+# Plot Shannon diversity over time
+shannon_plot <- ggplot(diversity_df, aes(x = Transfer, y = Shannon)) +
+  geom_line(color = "blue", size = 1) +
+  geom_point(color = "blue") +
+  ggtitle("Shannon Diversity Over Time (GALSET)") +
+  xlab("Transfer Time") + ylab("Shannon Diversity Index") +
+  theme_minimal()
+
+# Plot Simpson diversity over time
+simpson_plot <- ggplot(diversity_df, aes(x = Transfer, y = Simpson)) +
+  geom_line(color = "red", size = 1) +
+  geom_point(color = "red") +
+  ggtitle("Simpson Diversity Over Time (GALSET)") +
+  xlab("Transfer Time") + ylab("Simpson Index (Lower = More Diversity)") +
+  theme_minimal()
+
+# Plot variance of clump sizes over time
+variance_plot <- ggplot(diversity_df, aes(x = Transfer, y = Variance)) +
+  geom_line(color = "purple", size = 1) +
+  geom_point(color = "purple") +
+  ggtitle("Clump Size Variance Over Time (GALSET)") +
+  xlab("Transfer Time") + ylab("Variance in Clump Size") +
+  theme_minimal()
+
+# Display plots
+shannon_plot
+simpson_plot
+variance_plot
+
+
+
+
 ```
 
 ```{r}
