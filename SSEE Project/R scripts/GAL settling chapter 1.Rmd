@@ -100,66 +100,118 @@ plot5
 ```{r}
 library(dplyr)
 library(ggplot2)
-library(vegan)  # For diversity calculations
+library(vegan)  # For Shannon and Simpson diversity calculations
+library(patchwork)
+library(tidyr)
 
-# Define function to calculate diversity metrics
+# Define transfer times and treatments
+transfer_times <- c(1, 4, 8, 12, 16, 20, 24, 28)
+treatments <- c("GALSET", "GAL", "YPDSET", "YPD")
+
+# Function to calculate diversity metrics
 calculate_diversity <- function(data) {
+  if (nrow(data) == 0) return(c(Shannon = NA, Simpson = NA, Variance = NA))  # Avoid errors
+  
   freq_table <- table(data$Number)  # Frequency of each clump size
   proportions <- freq_table / sum(freq_table)  # Convert to proportions
-
-  shannon_index <- -sum(proportions * log(proportions))  # Shannon Index
-  simpson_index <- sum(proportions^2)  # Simpson Index
+  
+  shannon_index <- -sum(proportions * log(proportions), na.rm = TRUE)  # Shannon Index
+  simpson_index <- sum(proportions^2, na.rm = TRUE)  # Simpson Index
   variance <- var(data$Number, na.rm = TRUE)  # Variance
-
+  
   return(c(Shannon = shannon_index, Simpson = simpson_index, Variance = variance))
 }
 
-# Define transfer times
-transfer_times <- c(1, 4, 8, 12, 16, 20, 24, 28)
+# Collect diversity data for all treatments
+diversity_results <- list()
 
-# Compute diversity metrics for GALSET
-diversity_results <- lapply(transfer_times, function(t) {
-  filtered_data <- filter(galdata, Treatment == "GALSET", Transfer == t) %>% na.omit()
-  if (nrow(filtered_data) > 0) {
-    diversity_metrics <- calculate_diversity(filtered_data)
-    return(data.frame(Transfer = t, Shannon = diversity_metrics["Shannon"],
-                      Simpson = diversity_metrics["Simpson"], Variance = diversity_metrics["Variance"]))
-  } else {
-    return(data.frame(Transfer = t, Shannon = NA, Simpson = NA, Variance = NA))
+for (treatment in treatments) {
+  for (t in transfer_times) {
+    filtered_data <- filter(galdata, Treatment == treatment, Transfer == t) %>% na.omit()
+    
+    if (nrow(filtered_data) > 0) {  # Only add non-empty data
+      diversity_metrics <- calculate_diversity(filtered_data)
+      diversity_results <- append(diversity_results, list(
+        data.frame(Treatment = treatment, Transfer = t,
+                   Shannon = diversity_metrics["Shannon"],
+                   Simpson = diversity_metrics["Simpson"],
+                   Variance = diversity_metrics["Variance"])
+      ))
+    }
   }
-})
+}
 
-# Combine results into a single data frame
+# Combine results into a single dataframe
 diversity_df <- bind_rows(diversity_results)
 
-# Plot Shannon diversity over time
-shannon_plot <- ggplot(diversity_df, aes(x = Transfer, y = Shannon)) +
-  geom_line(color = "blue", size = 1) +
-  geom_point(color = "blue") +
-  ggtitle("Shannon Diversity Over Time (GALSET)") +
-  xlab("Transfer Time") + ylab("Shannon Diversity Index") +
-  theme_minimal()
+# Check if the data is non-empty
+print(diversity_df)  # Debugging step: make sure data exists
 
-# Plot Simpson diversity over time
-simpson_plot <- ggplot(diversity_df, aes(x = Transfer, y = Simpson)) +
-  geom_line(color = "red", size = 1) +
-  geom_point(color = "red") +
-  ggtitle("Simpson Diversity Over Time (GALSET)") +
-  xlab("Transfer Time") + ylab("Simpson Index (Lower = More Diversity)") +
-  theme_minimal()
+# Reshape data for ggplot (long format)
+diversity_long <- diversity_df %>%
+  pivot_longer(cols = c(Shannon, Simpson, Variance), names_to = "Metric", values_to = "Value") %>%
+  drop_na()  # Remove any NA values to prevent blank plots
 
-# Plot variance of clump sizes over time
-variance_plot <- ggplot(diversity_df, aes(x = Transfer, y = Variance)) +
-  geom_line(color = "purple", size = 1) +
-  geom_point(color = "purple") +
-  ggtitle("Clump Size Variance Over Time (GALSET)") +
-  xlab("Transfer Time") + ylab("Variance in Clump Size") +
-  theme_minimal()
+# Debug: Check reshaped data
+print(diversity_long)
 
-# Display plots
-shannon_plot
-simpson_plot
-variance_plot
+# Define color scheme for treatments
+color_scheme <- c("GALSET" = "#4848FF", "GAL" = "#ADD8E6", "YPDSET" = "#006400", "YPD" = "#90EE90")
+
+# Custom plot function with y-axis limits auto-adjusted
+generate_diversity_plot <- function(metric_name, y_label, y_scale="linear") {
+  filtered_data <- filter(diversity_long, Metric == metric_name)
+  
+  if (nrow(filtered_data) == 0) {
+    message(paste("No data available for", metric_name))
+    return(ggplot() + ggtitle(paste("No data for", metric_name)))
+  }
+  
+  plot <- ggplot(filtered_data, aes(x = Transfer, y = Value, color = Treatment, group = Treatment)) +
+    geom_line(size = 1.2) + geom_point(size = 4) +
+    ggtitle(paste(metric_name, "Over Time")) +
+    xlab("Transfer Time") + ylab(y_label) +
+    theme_minimal(base_size = 16) +
+    theme(
+      legend.position = "none",  # Remove legends from individual plots
+      plot.title = element_text(face = "bold", hjust = 0.5),
+      axis.text = element_text(size = 14),
+      axis.title = element_text(size = 16),
+      plot.margin = margin(20, 20, 20, 20)
+    ) +
+    scale_color_manual(values = color_scheme) +
+    scale_x_continuous(breaks = transfer_times)  # Ensure x-axis labels are correct
+  
+  if (y_scale == "log") {
+    plot <- plot + scale_y_log10()
+  } else {
+    plot <- plot + scale_y_continuous()
+  }
+  
+  return(plot)
+}
+
+# Generate individual plots
+shannon_plot <- generate_diversity_plot("Shannon", "Shannon Diversity Index")
+simpson_plot <- generate_diversity_plot("Simpson", "Simpson Index (Lower = More Diversity)")
+variance_plot <- generate_diversity_plot("Variance", "Variance in Clump Size", y_scale="log")
+
+# Arrange all plots in a vertical layout and collect the legend
+final_plot <- (shannon_plot / simpson_plot / variance_plot) + 
+  plot_layout(ncol = 1, guides = "collect") & 
+  theme(legend.position = "bottom")  # Single legend at bottom
+
+# Display final plot
+final_plot
+
+
+
+
+
+
+
+
+
 
 
 
@@ -333,6 +385,67 @@ YPDSET = YPDSetPlot16 / YPDSetPlot20 / YPDSetPlot24 / YPDSetPlot28 + plot_layout
 YPDSET
 
 YPDsetplotCombo
+
+
+```
+
+```{r}
+library(dplyr)
+library(ggplot2)
+library(patchwork)
+
+# Define the transfer times you are interested in
+transfer_times <- c(1, 4, 8, 12, 16, 20, 24, 28)
+
+# Function to filter, clean, and calculate the mean
+filter_clean_calc_mean <- function(data, treatment, transfer, reps = c(1,2,3,4)) {
+  filtered_data <- filter(data, Treatment == treatment, Transfer == transfer, Replicate %in% reps) %>% na.omit()
+  avg_value <- mean(filtered_data$Number, na.rm = TRUE)
+  return(list(data = filtered_data, avg = avg_value))
+}
+
+# Process YPDSET and YPD treatments
+ypdset_results <- lapply(transfer_times, function(t) filter_clean_calc_mean(galdata, "YPDSET", t))
+ypd_results <- lapply(c(1, 4), function(t) filter_clean_calc_mean(galdata, "YPD", t))
+
+# Create a function to generate histograms
+generate_histogram <- function(data, avg, title_prefix, fill_color, x_limit = 30, y_limit = 200) {
+  ggplot(data, aes(x = Number)) +
+    geom_histogram(binwidth = 1, fill = fill_color, color = "black", alpha = 0.7) +
+    ggtitle(paste(title_prefix, "Settling time", unique(data$Transfer), "avg", round(avg, 2))) +
+    xlab("Clump size") +
+    ylab("Frequency") +
+    theme_minimal() +
+    xlim(0, x_limit) +
+    ylim(0, y_limit)
+}
+
+# Generate plots for YPDSET
+ypdset_plots <- mapply(generate_histogram, 
+                        lapply(ypdset_results, `[[`, "data"), 
+                        lapply(ypdset_results, `[[`, "avg"), 
+                        MoreArgs = list(title_prefix = "YPDSET", fill_color = "#006400"), 
+                        SIMPLIFY = FALSE)
+
+# Generate plots for YPD
+ypd_plots <- mapply(generate_histogram, 
+                    lapply(ypd_results, `[[`, "data"), 
+                    lapply(ypd_results, `[[`, "avg"), 
+                    MoreArgs = list(title_prefix = "YPD", fill_color = "#90EE90", x_limit = 20, y_limit = 400), 
+                    SIMPLIFY = FALSE)
+
+# Combine and display plots
+combined_plot <- (ypd_plots[[1]] / ypd_plots[[2]] / ypdset_plots[[1]] / ypdset_plots[[2]]) + plot_layout(ncol = 2)
+combined_plot
+
+# Manually select and display plots the same way as GALSET
+YPDsetplotCombo <- ypdset_plots[[1]] / ypdset_plots[[2]] / ypdset_plots[[3]] / ypdset_plots[[4]] + plot_layout(ncol = 2)
+YPDsetplotCombo
+
+YPDSET <- ypdset_plots[[5]] / ypdset_plots[[6]] / ypdset_plots[[7]] / ypdset_plots[[8]] + plot_layout(ncol = 2)
+YPDSET
+
+
 
 
 ```
